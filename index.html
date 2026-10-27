@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B6E7F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="An Tâm">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>An Tâm – Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F1F6F8;--card:#fff;--ink:#12303B;--mute:#4A6672;--pri:#0B6E7F;--on-pri:#fff;--red:#C62828;--green:#2E7D32;--amber:#B26A00;--line:#D3E0E6;--soft:#E3F0F3;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1B20;--card:#17292F;--ink:#EAF3F6;--mute:#9DB6BF;--pri:#4FC3D6;--on-pri:#06222A;--red:#FF6B6B;--green:#6FD27A;--amber:#FFB74D;--line:#2C4650;--soft:#1E3840;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1B20;--card:#17292F;--ink:#EAF3F6;--mute:#9DB6BF;--pri:#4FC3D6;--on-pri:#06222A;--red:#FF6B6B;--green:#6FD27A;--amber:#FFB74D;--line:#2C4650;--soft:#1E3840;color-scheme:dark}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:400 19px/1.5 "Be Vietnam Pro",system-ui,sans-serif;display:flex;justify-content:center}
+#app{width:100%;max-width:480px;height:100%;display:flex;flex-direction:column}
+main{flex:1;overflow-y:auto;padding:20px 18px 24px}
+h1{font-size:28px;font-weight:800;line-height:1.25;margin-bottom:14px}
+h2{font-size:22px;font-weight:800;margin:22px 0 10px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px}
+.mute{color:var(--mute);font-size:17px}
+button{font:inherit;font-weight:600;cursor:pointer;border:0;border-radius:18px;min-height:64px;padding:12px 18px;width:100%;color:var(--on-pri);background:var(--pri)}
+button:focus-visible{outline:4px solid var(--amber);outline-offset:2px}
+button.red{background:var(--red);color:#fff}
+button.alt{background:var(--soft);color:var(--ink)}
+.status{display:flex;gap:14px;align-items:center;background:var(--soft);border-color:var(--green)}
+.dot{width:22px;height:22px;border-radius:50%;background:var(--green);flex:none}
+.status b{font-size:24px;display:block}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.vit{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vit div{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:12px 14px}
+.vit b{font-size:30px;font-weight:800;display:block;line-height:1.2}
+.bars{display:flex;gap:8px;align-items:flex-end;height:120px;margin-top:10px}
+.bars div{flex:1;background:var(--pri);border-radius:8px 8px 0 0;position:relative}
+.bars div.hi{background:var(--amber)}
+.bars span{position:absolute;bottom:-26px;left:0;right:0;text-align:center;font-size:15px;color:var(--mute)}
+nav{display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border-top:2px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+nav button{background:none;color:var(--mute);min-height:68px;padding:6px 2px;font-size:15px;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button svg{width:30px;height:30px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+nav button[aria-selected="true"]{color:var(--pri);background:var(--soft)}
+.tab{display:none}.tab.on{display:block}
+.map{height:200px;border-radius:16px;position:relative;overflow:hidden;background:var(--soft);border:2px solid var(--line);margin-bottom:12px;
+background-image:linear-gradient(var(--line) 2px,transparent 2px),linear-gradient(90deg,var(--line) 2px,transparent 2px);background-size:50px 50px}
+.pin{position:absolute;transform:translate(-50%,-100%);text-align:center;font-weight:600;font-size:15px}
+.pin i{display:block;width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);margin:0 auto 2px;background:var(--red)}
+.pin.me i{background:var(--pri)}
+.sw{position:relative;width:64px;height:38px;flex:none}
+.sw input{position:absolute;inset:0;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.sw span{position:absolute;inset:0;border-radius:20px;background:var(--line);transition:.2s}
+.sw span::after{content:"";position:absolute;top:4px;left:4px;width:30px;height:30px;border-radius:50%;background:#fff;transition:.2s}
+.sw input:checked+span{background:var(--green)}
+.sw input:checked+span::after{left:30px}
+.sw input:focus-visible+span{outline:4px solid var(--amber)}
+.log li{list-style:none;padding:10px 0;border-bottom:1px solid var(--line);font-size:17px}
+.log li:last-child{border:0}
+.log{padding:0}
+#ov{position:fixed;inset:0;background:var(--red);color:#fff;display:none;flex-direction:column;justify-content:center;gap:16px;padding:28px 22px;z-index:9;text-align:center}
+#ov.on{display:flex}
+#ov h1{font-size:34px}
+#ov .big{font-size:76px;font-weight:800;line-height:1}
+#ov button{background:#fff;color:#8E1111}
+#ov button.k{background:transparent;color:#fff;border:3px solid #fff}
+.q{font-size:26px;font-weight:800;margin:12px 0}
+.demo{font-size:15px;color:var(--mute);text-align:center;margin-top:10px}
+</style>
+</head>
+<body>
+<div id="app">
+<main>
+
+<section class="tab on" id="t-home">
+  <h1>Chào bác Lan</h1>
+  <div class="card status"><span class="dot"></span><div><b>Mọi thứ ổn</b><span class="mute">Đồng hồ đang đeo · cập nhật 1 phút trước</span></div></div>
+  <div class="vit">
+    <div><span class="mute">Nhịp tim</span><b>74</b><span class="mute">lần/phút</span></div>
+    <div><span class="mute">Huyết áp</span><b>128/82</b><span class="mute">bình thường</span></div>
+  </div>
+  <h2>7 ngày qua</h2>
+  <div class="card">
+    <div class="mute">Số lần đồng hồ ghi nhận dấu hiệu bất thường</div>
+    <div class="bars" style="margin-bottom:30px">
+      <div style="height:10%"><span>T2</span></div><div style="height:10%"><span>T3</span></div><div class="hi" style="height:45%"><span>T4</span></div><div style="height:10%"><span>T5</span></div><div style="height:20%"><span>T6</span></div><div style="height:10%"><span>T7</span></div><div style="height:10%"><span>CN</span></div>
+    </div>
+    <p>Có <b>1 lần</b> nhịp tim không đều vào thứ 4. Không có cảnh báo đột quỵ.</p>
+  </div>
+  <button class="alt" id="demoBtn">Thử xem cảnh báo (demo)</button>
+  <p class="demo">Nút này chỉ để trình diễn khi đồng hồ phát hiện dấu hiệu đột quỵ.</p>
+</section>
+
+<section class="tab" id="t-family">
+  <h1>Người thân</h1>
+  <div class="map" aria-label="Bản đồ minh hoạ">
+    <div class="pin me" style="left:45%;top:60%"><i></i>Bác Lan</div>
+    <div class="pin" style="left:78%;top:36%"><i></i>Con Mai</div>
+  </div>
+  <div class="card row"><div><b>Con Mai</b><div class="mute">Đang nhận cảnh báo</div></div><button style="width:auto" class="alt" onclick="toast('Đang tìm vị trí của Con Mai…')">Xem vị trí</button></div>
+  <div class="card row"><div><b>Anh Hùng</b><div class="mute">Đang nhận cảnh báo</div></div><button style="width:auto" class="alt" onclick="toast('Đang tìm vị trí của Anh Hùng…')">Xem vị trí</button></div>
+  <button onclick="toast('Đã tạo mã mời: 4827. Gửi mã này cho người thân.')">Mời thêm người thân</button>
+  <h2>Thông báo gần đây</h2>
+  <div class="card"><ul class="log" id="log"><li>Hôm qua 08:00 · Nhắc kiểm tra đột quỵ: đã làm xong</li><li>Thứ 4 · Nhịp tim không đều, đã báo cho Con Mai</li></ul></div>
+</section>
+
+<section class="tab" id="t-remind">
+  <h1>Nhắc kiểm tra</h1>
+  <div class="card">
+    <div class="row"><div><b>Sáng · 08:00</b><div class="mute">Kiểm tra nhanh 1 phút</div></div><label class="sw"><input type="checkbox" checked aria-label="Nhắc buổi sáng"><span></span></label></div>
+  </div>
+  <div class="card">
+    <div class="row"><div><b>Tối · 20:00</b><div class="mute">Kiểm tra nhanh 1 phút</div></div><label class="sw"><input type="checkbox" checked aria-label="Nhắc buổi tối"><span></span></label></div>
+  </div>
+  <button id="startTest">Kiểm tra ngay</button>
+  <div class="card" id="test" style="display:none;margin-top:14px">
+    <div class="mute" id="tstep"></div>
+    <div class="q" id="tq"></div>
+    <p id="td" class="mute" style="margin-bottom:14px"></p>
+    <div class="vit"><button id="tok">Bình thường</button><button class="red" id="tbad">Có bất thường</button></div>
+  </div>
+</section>
+
+<section class="tab" id="t-help">
+  <h1>Cần giúp đỡ</h1>
+  <div class="card" style="border-color:var(--red)">
+    <b style="font-size:22px">Nghi ngờ đột quỵ?</b>
+    <p class="mute" style="margin-bottom:12px">Gọi cấp cứu ngay. Không chờ đợi.</p>
+    <a href="tel:115" style="text-decoration:none"><button class="red">Gọi cấp cứu 115</button></a>
+  </div>
+  <div class="card">
+    <b style="font-size:22px">Tổng đài An Tâm</b>
+    <p class="mute" style="margin-bottom:12px">Có người trực 24 giờ mỗi ngày. Tổng đài viên sẽ thấy vị trí đồng hồ của bác.</p>
+    <a href="tel:19000000" style="text-decoration:none"><button>Gọi tổng đài</button></a>
+  </div>
+  <div class="card row">
+    <div><b>Chia sẻ vị trí</b><div class="mute">Cho tổng đài và người thân</div></div>
+    <label class="sw"><input type="checkbox" checked aria-label="Chia sẻ vị trí"><span></span></label>
+  </div>
+  <p class="demo">Số 19000000 là số giả, thay bằng số thật của bạn.</p>
+</section>
+
+</main>
+
+<nav role="tablist" aria-label="Menu chính">
+  <button role="tab" aria-selected="true" data-t="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>Trang chủ</button>
+  <button role="tab" aria-selected="false" data-t="family"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-4 3-6 6.5-6s6.5 2 6.5 6M17 5a3.5 3.5 0 010 7M18 14c2.5.6 3.5 2.6 3.5 6"/></svg>Người thân</button>
+  <button role="tab" aria-selected="false" data-t="remind"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0112 0v6l2 2H4zM10 21h4"/></svg>Nhắc nhở</button>
+  <button role="tab" aria-selected="false" data-t="help"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></svg>Hỗ trợ</button>
+</nav>
+</div>
+
+<div id="ov" role="alertdialog" aria-live="assertive">
+  <h1>Có dấu hiệu đột quỵ</h1>
+  <p>Đồng hồ phát hiện cánh tay yếu và nhịp tim bất thường.</p>
+  <div class="big" id="cd">30</div>
+  <p>giây nữa sẽ tự báo cho người thân và tổng đài</p>
+  <button id="call">Gọi cấp cứu 115</button>
+  <button class="k" id="fine">Tôi ổn, huỷ cảnh báo</button>
+</div>
+
+<script>
+var $=function(s){return document.querySelector(s)};
+document.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){
+  document.querySelectorAll("nav button").forEach(function(x){x.setAttribute("aria-selected",x===b)});
+  document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("on")});
+  $("#t-"+b.dataset.t).classList.add("on");$("main").scrollTop=0}});
+function toast(m){alert(m)}
+function addLog(t){var li=document.createElement("li");li.textContent=t;$("#log").prepend(li)}
+var timer,n;
+function sendAlert(){clearInterval(timer);$("#ov").classList.remove("on");addLog("Vừa xong · Cảnh báo đột quỵ đã gửi cho Con Mai, Anh Hùng và tổng đài");alert("Đã gửi cảnh báo và vị trí cho 2 người thân và tổng đài An Tâm.")}
+$("#demoBtn").onclick=function(){n=30;$("#cd").textContent=n;$("#ov").classList.add("on");
+  timer=setInterval(function(){n--;$("#cd").textContent=n;if(n<=0)sendAlert()},1000)};
+$("#fine").onclick=function(){clearInterval(timer);$("#ov").classList.remove("on");addLog("Vừa xong · Bác Lan huỷ cảnh báo (báo nhầm)")};
+$("#call").onclick=function(){sendAlert();location.href="tel:115"};
+var steps=[["Mặt","Nhờ bác mỉm cười. Hai bên mặt có cân không?"],["Tay","Giơ cả hai tay lên. Có tay nào yếu hoặc rơi xuống không?"],["Nói","Nói câu: Hôm nay trời đẹp. Bác nói có rõ không?"]],i=0;
+function show(){if(i>=steps.length){$("#tstep").textContent="Xong";$("#tq").textContent="Cả 3 đều bình thường";$("#td").textContent="Đã lưu kết quả. Hẹn bác lần kiểm tra sau.";$("#tok").style.display=$("#tbad").style.display="none";addLog("Vừa xong · Kiểm tra đột quỵ: bình thường");return}
+$("#tstep").textContent="Bước "+(i+1)+" trên 3";$("#tq").textContent=steps[i][0];$("#td").textContent=steps[i][1];$("#tok").style.display=$("#tbad").style.display=""}
+$("#startTest").onclick=function(){i=0;$("#test").style.display="block";show()};
+$("#tok").onclick=function(){i++;show()};
+$("#tbad").onclick=function(){$("#test").style.display="none";$("#demoBtn").click()};
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){})}
+</script>
+</body>
+</html>
